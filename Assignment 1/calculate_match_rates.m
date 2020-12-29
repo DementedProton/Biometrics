@@ -1,8 +1,8 @@
 function [false_match_rate, true_match_rate] = calculate_match_rates
     [genuine_scores, imposter_scores] = extract_genuine_imposter_scores;
     
-    genuine_scores_sorted = sort(int32(genuine_scores), 'descend')
-    imposter_scores_sorted = sort(int32(imposter_scores), 'descend')
+    genuine_scores_sorted = sort(int32(genuine_scores), 'descend');
+    imposter_scores_sorted = sort(int32(imposter_scores), 'descend');
     
     minimum_threshold = floor(min(imposter_scores));
     maximum_threshold = ceil(max(genuine_scores));

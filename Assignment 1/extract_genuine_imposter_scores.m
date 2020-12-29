@@ -22,12 +22,12 @@ function[genuine, imposter] = extract_genuine_imposter_score
     imposter = imposter(1:imposter_count-1);
 
     figure();
-    bins=350 
+    bins=350; 
     histogram(genuine, bins, 'Facecolor', 'b', 'Normalization', 'probability', 'EdgeColor', 'none');
     hold on;
     histogram(imposter, bins, 'Facecolor', 'r', 'Normalization', 'probability', 'EdgeColor', 'none'); 
     hold off;
-    title('Genuine and Imposter score histogram, Binsize:',bins);
+    title(strcat('Genuine and Imposter score histogram, Binsize:', int2str(bins)));
     legend('Genuine scores', 'Imposter scores', 'Location', 'southwest');
     xlabel('Scores');
     ylabel('Probability');
