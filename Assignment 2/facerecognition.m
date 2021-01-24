@@ -130,21 +130,9 @@ function[genuine, imposter] = extract_genuine_imposter_score(dissimilarity_score
     genuine = genuine(1:genuine_count-1);
     imposter = imposter(1:imposter_count-1);
     
-    
-%     figure();
-%     bins=350; 
-%     histogram(genuine, bins, 'Facecolor', 'b', 'Normalization', 'probability', 'EdgeColor', 'none');
-%     hold on;
-%     histogram(imposter, bins, 'Facecolor', 'r', 'Normalization', 'probability', 'EdgeColor', 'none'); 
-%     hold off;
-%     title(strcat('Genuine and Imposter score histogram, Binsize:', int2str(bins)));
-%     legend('Genuine scores', 'Imposter scores', 'Location', 'southwest');
-%     xlabel('Scores');
-%     ylabel('Probability');
 end
     
 function [false_match_rate, true_match_rate] = calculate_match_rates(genuine_scores, imposter_scores, m_val)
-%     [genuine_scores, imposter_scores] = extract_genuine_imposter_scores;
     
     genuine_scores_sorted = sort(int32(genuine_scores), 'ascend');
     imposter_scores_sorted = sort(int32(imposter_scores), 'ascend');
@@ -156,6 +144,8 @@ function [false_match_rate, true_match_rate] = calculate_match_rates(genuine_sco
     
     false_match_rate = zeros(1, total_number_of_scores);
     true_match_rate = zeros(1, total_number_of_scores);
+    
+    % going through the thresholds and computing FMR and TMR
      threshold = 0;
      for j = 1:size(false_match_rate,2)
          count=0;
@@ -177,49 +167,18 @@ function [false_match_rate, true_match_rate] = calculate_match_rates(genuine_sco
          threshold = threshold + 1;
      end
     
-%     max_value = maximum_threshold;
-%     for i = 1:size(imposter_scores_sorted, 2)
-%         threshold = imposter_scores_sorted(1, i);
-%         if threshold < max_value
-%             false_match_rate(maximum_threshold - max_value + 1: maximum_threshold - threshold + 1) = (i-1)/size(imposter_scores_sorted, 2);
-%             max_value = threshold;
-%         end
-%     end
-%     false_match_rate(maximum_threshold - max_value + 1 : end)= 1;
-     %disp(false_match_rate);
-%     
-%     max_value = maximum_threshold;
-%     for i = 1:size(genuine_scores_sorted, 2)
-%         threshold = genuine_scores_sorted(1, i);
-%         if threshold < max_value
-%             true_match_rate(maximum_threshold - max_value + 1: maximum_threshold - threshold + 1) = (i-1)/size(genuine_scores_sorted, 2);
-%             max_value = threshold;
-%         end
-%     end
-%     true_match_rate(maximum_threshold - max_value + 1 : end)= 1;
-%     true_match_rate = true_match_rate(1:total_number_of_scores);
-     %disp(true_match_rate);
-%     
-    
-%     frpintf("%0.4f", eer);
-    % FMR vs FNMR curve , plotting both on the same curve
     false_non_match_rate = 1 - true_match_rate;
-%     eers = abs(false_match_rate - false_non_match_rate);
-%     eer_pos = find(eers == min(eers));
-%     eer = 0.5* (false_match_rate(eer_pos) + false_non_match_rate(eer_pos));
-%     fprintf("EER = %0.4f\n", eer);
-%     eer_coords = find(false_non_match_rate - false_match_rate < eps, 1) ;
+    
+    % Plotting the DET curve and marking the EER
     figure()
     x = 0:0.1:1;
     y = x;
     [x(i), y(i)] = polyxpoly(x, y, false_non_match_rate, false_match_rate);
     hold on;
     plot(false_match_rate, false_non_match_rate);
-%     plot(false_match_rate(eer_coords), false_non_match_rate(eer_coords), 'b.' , 'MarkerSize', 18);
     plot(x(i), y(i),'b.' , 'MarkerSize', 18);
     plot(x, y, '--');
     hold off;
-%     legend('FMR vs FNMR', 'EER line', 'Location', 'southwest');
     graph_title = strcat('DET curve for m=',int2str(m_val));
     title(graph_title);
     xlabel('False match rate');
@@ -227,6 +186,7 @@ function [false_match_rate, true_match_rate] = calculate_match_rates(genuine_sco
     filename = strcat(strcat('images/performance_plots/DET_plots/DET_', int2str(m_val)),'.png');
     exportgraphics(gcf,filename,'Resolution', 55);
     
+    % FMR vs FNMR curve , plotting both on the same curve
     figure();
     hold on;
     plot(minimum_threshold:1:maximum_threshold, false_match_rate);
