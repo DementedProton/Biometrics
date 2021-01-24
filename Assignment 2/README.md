@@ -1,4 +1,4 @@
-# READme
+# Prerequisites
 
 The script `facerecognition.m` requires the Mapping toolbox which needs to be installed as MATLAB add-on if not already done so. 
 
