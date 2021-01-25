@@ -1,5 +1,6 @@
+% This function calculates the FMR and TMR values from the genuine and imposter scores 
 function [false_match_rate, true_match_rate] = calculate_match_rates
-    [genuine_scores, imposter_scores] = extract_genuine_imposter_scores;
+    [genuine_scores, imposter_scores] = extract_genuine_imposter_scores;  % get the genuine and imposter scores 
     
     genuine_scores_sorted = sort(int32(genuine_scores), 'descend');
     imposter_scores_sorted = sort(int32(imposter_scores), 'descend');
@@ -12,6 +13,7 @@ function [false_match_rate, true_match_rate] = calculate_match_rates
     false_match_rate = zeros(1, total_number_of_scores);
     true_match_rate = zeros(1, total_number_of_scores);
     
+    % calculate the FMR 
     max_value = maximum_threshold;
     for i = 1:size(imposter_scores_sorted, 2)
         threshold = imposter_scores_sorted(1, i);
@@ -22,6 +24,7 @@ function [false_match_rate, true_match_rate] = calculate_match_rates
     end
     false_match_rate(maximum_threshold - max_value + 1 : end)= 1;
     
+    % calculate the TMR
     max_value = maximum_threshold;
     for i = 1:size(genuine_scores_sorted, 2)
         threshold = genuine_scores_sorted(1, i);
