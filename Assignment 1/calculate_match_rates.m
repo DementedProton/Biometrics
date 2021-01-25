@@ -32,13 +32,13 @@ function [false_match_rate, true_match_rate] = calculate_match_rates
     end
     true_match_rate(maximum_threshold - max_value + 1 : end)= 1;
     
-    % FMR vs FNMR curve , plotting both on the same curve
+     %FMR vs FNMR curve , plotting both on the same curve
     figure();
     hold on;
     plot(maximum_threshold:-1:minimum_threshold, false_match_rate);
     plot(maximum_threshold:-1:minimum_threshold, 1 - true_match_rate);
     hold off
-    legend('FMR', 'FNMR', 'Location', 'southwest');
+    legend('FMR', 'FNMR', 'Location', 'best');
     title('False Match Rates and False Non-Match rates');
     xlabel('Threshold value');
     ylabel('Score percentage');
@@ -58,10 +58,34 @@ function [false_match_rate, true_match_rate] = calculate_match_rates
     xlabel('False Match Rate');
     ylabel('True Match Rate');
     
+    % ROC - FMR vs TMR - log TMR
+    figure();
+    plot(false_match_rate, true_match_rate);
+    title('Receiver Operating Characteristic curve - Log TMR');
+    set(gca, 'yscale', 'log');
+    xlabel('False Match Rate');
+    ylabel('True Match Rate');
+    
+    
+    % ROC - FMR vs TMR - log FMR and FNMR
+    figure();
+    plot(false_match_rate, true_match_rate);
+    title('Receiver Operating Characteristic curve - Log FMR and TMR');
+    set(gca, 'xscale', 'log', 'yscale', 'log');
+    xlabel('False Match Rate');
+    ylabel('True Match Rate');
+    
     % DET - -FMR vs FNMR normal scale
     figure();
-    plot(false_match_rate, 1 - true_match_rate);
-    title('Decision Error Tradeoff Curve');
+    false_non_match_rate = 1 - true_match_rate;
+    eer_coords = find(false_non_match_rate - false_match_rate < eps, 1) ;
+    hold on
+    plot(false_match_rate, false_non_match_rate);
+    plot(false_match_rate(eer_coords), false_non_match_rate(eer_coords), 'b.' , 'MarkerSize', 18);
+    plot(false_match_rate, false_match_rate, '--');
+    hold off
+    title('Decision Error Tradeoff Curve (DET) and Equal Error Rate (EER)');
+    legend('DET', 'EER Point', 'EER Line', 'Location', 'Best');
     xlabel('False Match Rate');
     ylabel('False Non-Match Rate');
     
