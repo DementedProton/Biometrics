@@ -1,5 +1,6 @@
+% This function extracts the genuine and imposter scores from the similarity matrix
 function[genuine, imposter] = extract_genuine_imposter_score
-    [S, Id] = get_scores_from_file;
+    [S, Id] = get_scores_from_file; % gets the scores from the id file
     [np, nt] = size(S);
     genuine = zeros(1, np*nt);
     imposter = zeros(1, np*nt);
@@ -8,11 +9,11 @@ function[genuine, imposter] = extract_genuine_imposter_score
     for i=1:np
         j=1;
         while j<i
-            if Id(i)==Id(j)
+            if Id(i)==Id(j) % diagonal values are genuine
                 genuine(genuine_count) = S(i,j);
                 genuine_count = genuine_count + 1;
             else
-                imposter(imposter_count) = S(i,j);
+                imposter(imposter_count) = S(i,j); % non diagonal values are imposter
                 imposter_count = imposter_count + 1;
             end
             j=j+1;
@@ -22,7 +23,7 @@ function[genuine, imposter] = extract_genuine_imposter_score
     imposter = imposter(1:imposter_count-1);
 
     figure();
-    bins=350; 
+    bins=350; % plots for bin size of 350
     histogram(genuine, bins, 'Facecolor', 'b', 'Normalization', 'probability', 'EdgeColor', 'none');
     hold on;
     histogram(imposter, bins, 'Facecolor', 'r', 'Normalization', 'probability', 'EdgeColor', 'none'); 
